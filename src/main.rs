@@ -1,6 +1,7 @@
-use std::path::PathBuf;
+mod font_map;
 
 use clap::Parser;
+use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 pub enum Args {
@@ -15,6 +16,10 @@ pub enum Args {
         text: String,
         /// Path to output the fontmap_file file and json to
         fontmap_file: PathBuf,
+
+        /// The scale of the font. Default is 12.0.
+        #[clap(long, default_value = "12.0")]
+        font_scale: f32,
     },
 }
 
@@ -26,28 +31,10 @@ fn main() -> Result<(), String> {
             ttf,
             text,
             fontmap_file,
+            font_scale,
         } => {
-            generate_font_map(ttf, text, fontmap_file)?;
+            font_map::run(ttf, text, fontmap_file, font_scale)?;
         }
-    }
-
-    Ok(())
-}
-
-fn generate_font_map(ttf: PathBuf, text: String, fontmap_file: PathBuf) -> Result<(), String> {
-    // Validate the TTF file
-    if !ttf.exists() {
-        return Err(format!("TTF file does not exist: {:?}", ttf));
-    }
-
-    // Validate the TTF file is a TTF file
-    if ttf.extension().unwrap().to_ascii_lowercase() != "ttf" {
-        return Err(format!("TTF file is not a TTF file: {:?}", ttf));
-    }
-
-    // Validate the fontmap_file file ends with .fontmap_file
-    if fontmap_file.extension().is_some() {
-        return Err("FONTMAP_FILE should not have an extension".to_string());
     }
 
     Ok(())

@@ -5,6 +5,8 @@
 - [x] Add in a new CLI option to the main program
 - [x] Specify a font file
 - [x] Specify a file or folder for reading text files
+- [ ] Add loading of font, then rasterizing an image and saving to disk.
+- [ ] Convert it to do this for each character, then build a spritesheet of it.
 - [ ] Build a hashmap of all characters used
 - [ ] Write each character to a spritesheet and add its coordinates to an object that maps characters to coordinates
 - [ ] Save everything to two files, a spritesheet of all characters and a json object that contains the mapping of characters to regions on the spritesheet
