@@ -1,4 +1,5 @@
 mod font_map;
+mod spritesheet;
 
 use clap::Parser;
 use std::path::PathBuf;
