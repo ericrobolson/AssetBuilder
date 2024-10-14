@@ -16,8 +16,7 @@ pub enum Args {
         /// String of text to render
         text: String,
         /// Path to output the fontmap_file file and json to
-        fontmap_file: PathBuf,
-
+        fontmap_directory: PathBuf,
         /// The scale of the font. Default is 12.0.
         #[clap(long, default_value = "12.0")]
         font_scale: f32,
@@ -31,10 +30,10 @@ fn main() -> Result<(), String> {
         Args::FontMap {
             ttf,
             text,
-            fontmap_file,
+            fontmap_directory,
             font_scale,
         } => {
-            font_map::run(ttf, text, fontmap_file, font_scale)?;
+            font_map::run(ttf, text, fontmap_directory, font_scale)?;
         }
     }
 

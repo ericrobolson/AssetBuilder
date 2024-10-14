@@ -1,6 +1,5 @@
-- [ ] Create new repo
 
-## Font bitmap sheet
+## 24-10-14 Font bitmap sheet
 - Takes in text and a font file, then generates a spritesheet with coordinates to each character. 
 - [x] Add in a new CLI option to the main program
 - [x] Specify a font file
@@ -8,5 +7,5 @@
 - [x] Add loading of font, then rasterizing an image and saving to disk.
 - [x] Convert it to do this for each character.
 - [x] Build a spritesheet for this. Use characters to index the regions to use for the sprite.
-- [ ] Write each character to a spritesheet and add its coordinates to an object that maps characters to coordinates
-- [ ] Save everything to two files, a spritesheet of all characters and a json object that contains the mapping of characters to regions on the spritesheet
+- [x] Write each character to a spritesheet and add its coordinates to an object that maps characters to coordinates
+- [x] Save everything to two files, a spritesheet of all characters and a json object that contains the mapping of characters to regions on the spritesheet

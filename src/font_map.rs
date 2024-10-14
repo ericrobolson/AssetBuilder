@@ -1,5 +1,6 @@
+use crate::spritesheet::SpriteSheetBuilder;
 use image::{DynamicImage, Rgba};
-use rusttype::{point, Font, Scale};
+use rusttype::point;
 use std::{
     collections::{HashMap, HashSet},
     path::PathBuf,
@@ -8,7 +9,7 @@ use std::{
 pub fn run(
     ttf: PathBuf,
     text: String,
-    fontmap_file: PathBuf,
+    fontmap_directory: PathBuf,
     font_scale: f32,
 ) -> Result<(), String> {
     // Validate the TTF file
@@ -21,9 +22,9 @@ pub fn run(
         return Err(format!("TTF file is not a TTF file: {:?}", ttf));
     }
 
-    // Validate the fontmap_file file ends with .fontmap_file
-    if fontmap_file.extension().is_some() {
-        return Err("FONTMAP_FILE should not have an extension".to_string());
+    // Validate the fontmap file ends with .fontmap_file
+    if fontmap_directory.extension().is_some() {
+        return Err("FONTMAP_DIRECTORY should be a directory".to_string());
     }
 
     // Load font
@@ -33,7 +34,7 @@ pub fn run(
     };
 
     // Create directory
-    let parent = fontmap_file.parent().unwrap();
+    let parent = fontmap_directory.parent().unwrap();
     std::fs::create_dir_all(&parent).unwrap();
 
     // Font details
@@ -48,6 +49,10 @@ pub fn run(
     }
 
     // Render each character
+    let mut images: HashMap<char, DynamicImage> = HashMap::new();
+    let mut max_w = 0;
+    let mut max_h = 0;
+
     for character in characters {
         let text = character.to_string();
 
@@ -102,12 +107,53 @@ pub fn run(
             }
         }
 
-        // Save the image to a png file
-        let mut path = fontmap_file.clone();
-        let path = format!("{}_{}.png", path.as_os_str().to_str().unwrap(), character);
-        println!("Saving: {:?}", path);
-        image.save(path).unwrap();
+        // Update max w and h
+        let w = image.width();
+        let h = image.height();
+        if w > max_w {
+            max_w = w;
+        }
+        if h > max_h {
+            max_h = h;
+        }
+
+        // Insert image into hashmap
+        let dynamic_image = DynamicImage::ImageRgba8(image);
+        images.insert(character, dynamic_image);
     }
+
+    // Assemble spritesheet
+
+    // First we'll make a square spritesheet and calculate the size of each image
+    let max_images_per_row: u32 = 16;
+    let max_images_per_column: u32 =
+        (images.len() as f32 / max_images_per_row as f32).ceil() as u32;
+
+    let image_width = max_w * max_images_per_row;
+    let image_height = max_h * max_images_per_column;
+
+    let mut spritesheet =
+        SpriteSheetBuilder::new("font_atlas".to_string(), image_width, image_height);
+
+    // Sort images
+    let mut images: Vec<_> = images.into_iter().collect();
+    images.sort_by(|a, b| a.0.cmp(&b.0));
+
+    // Add each image to the spritesheet
+    let mut x = 0;
+    let mut y = 0;
+    for (character, image) in images {
+        spritesheet.add_sprite(character.to_string(), x, y, image);
+
+        x += max_w;
+        if x >= image_width {
+            x = 0;
+            y += max_h;
+        }
+    }
+
+    // Save
+    spritesheet.save(fontmap_directory)?;
 
     Ok(())
 }

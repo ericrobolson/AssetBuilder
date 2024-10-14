@@ -21,31 +21,34 @@ impl SpriteSheetBuilder {
     }
 
     /// Add a sprite to the sprite sheet.
-    pub fn add_sprite(&mut self, name: String, frames: Vec<(DynamicImage, Frame)>) {
-        let frames = frames
-            .into_iter()
-            .map(|(img, frame)| {
-                if frame.width > self.sheet.width {
-                    panic!(
-                        "Frame width {} is greater than the sprite sheet width {}",
-                        frame.width, self.sheet.width
-                    );
-                }
-                if img.width() != frame.width || img.height() != frame.height {
-                    panic!(
-                        "Image dimensions do not match frame dimensions: image {}x{}, frame {}x{}",
-                        img.width(),
-                        img.height(),
-                        frame.width,
-                        frame.height
-                    );
-                }
-                self.write_to_image(frame.x, frame.y, &img);
-                frame
-            })
-            .collect();
+    pub fn add_sprite(&mut self, name: String, x: u32, y: u32, img: DynamicImage) {
+        let width = img.width();
+        let height = img.height();
+        if width > self.sheet.width {
+            panic!(
+                "Image width {} is greater than the sprite sheet width {}",
+                width, self.sheet.width
+            );
+        }
+        if height > self.sheet.height {
+            panic!(
+                "Image height {} is greater than the sprite sheet height {}",
+                height, self.sheet.height
+            );
+        }
 
-        self.sheet.sprites.insert(name, frames);
+        self.write_to_image(x, y, &img);
+
+        if self.sheet.sprites.get(&name).is_none() {
+            self.sheet.sprites.insert(name.clone(), vec![]);
+        }
+
+        self.sheet.sprites.get_mut(&name).unwrap().push(Frame {
+            x,
+            y,
+            width,
+            height,
+        });
     }
 
     pub fn save(&self, path: PathBuf) -> Result<(), String> {
