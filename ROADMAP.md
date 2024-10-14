@@ -1,3 +1,14 @@
+## Blender Spritesheet Generator
+- [x] Build out new CLI option
+- [x] Takes in a blender project name
+- [x] Takes in an output directory
+- [x] Takes in a sprite width
+- [x] Takes in a view type 
+- [ ] Call blender + run script
+- [ ] In script, set camera position based on view type. Add makefile entry 
+- [ ] For each view type, set up a blend file and makefile script to run.
+- [ ] Render basic sprite without any animations (call it TPose) and do it for each animation.
+- [ ] Do this for all view types/rotations
 
 ## 24-10-14 Font bitmap sheet
 - Takes in text and a font file, then generates a spritesheet with coordinates to each character. 
