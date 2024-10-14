@@ -5,11 +5,16 @@
 - [x] Takes in a sprite width
 - [x] Takes in a view type 
 - [x] Add ability to list only certain animations for rendering
-- [ ] Call blender + run script
-- [ ] In script, set camera position based on view type. Add makefile entry 
-- [ ] For each view type, set up a blend file and makefile script to run.
-- [ ] Render basic sprite without any animations (call it TPose) and do it for each animation.
-- [ ] Do this for all view types/rotations
+- [x] Call blender + run script
+- [x] In script, set camera position based on view type. Add makefile entry 
+- [x] Get basic no animation original camera working
+- [ ] Setup views for each other view that doesn't have an animation
+- [ ] Make a blender file with two/three actions
+- [ ] Set up scripts for each other view to use
+- [ ] Implement rendering for each other view + makefile
+- [ ] Stitch together things into animations + spritesheets
+- [ ] Test out no animation spritesheets
+- [ ] Experiment with adding Rayon
 
 ## 24-10-14 Font bitmap sheet
 - Takes in text and a font file, then generates a spritesheet with coordinates to each character. 

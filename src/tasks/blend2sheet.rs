@@ -1,5 +1,9 @@
 use clap::{Parser, ValueEnum};
+use std::fs::DirEntry;
+use std::fs::File;
+use std::io::prelude::*;
 use std::path::PathBuf;
+use std::process::Command;
 
 /// The type of view the sprite sheet will be generated from
 #[derive(Parser, ValueEnum, Clone, Debug)]
@@ -25,31 +29,62 @@ pub fn run(
     blender_file: PathBuf,
     output_directory: PathBuf,
     sprite_width: u32,
+    sprite_height: u32,
     view_type: ViewType,
     num_rotations: u32,
     animations: String,
 ) -> Result<(), String> {
+    // Use
+    // https://github.com/ericrobolson/BuilderGenerator
+    // as reference
+
     validate(
         &blender_file,
         &output_directory,
         sprite_width,
+        sprite_height,
         num_rotations,
     )?;
 
-    let animations = animations
-        .split(",")
-        .map(|s| s.to_string())
-        .collect::<Vec<String>>();
+    let script_path = PathBuf::from("data/render_blender.py");
 
-    // TODO: if animations.is_empty() just use all animations in sheet
-    // TODO: if animation is not found do nothing
-    Ok(())
+    let command_output = Command::new("blender")
+        .arg("-b")
+        .arg(blender_file.clone())
+        // Load a python script
+        .arg("-P")
+        .arg(script_path)
+        // Debug events
+        // .arg("--debug-python")
+        // Add in some args for the Python script
+        .arg("--")
+        .arg(output_directory)
+        .arg(sprite_width.to_string())
+        .arg(sprite_height.to_string())
+        .arg(format!("{:?}", view_type))
+        .arg(num_rotations.to_string())
+        .arg(animations)
+        // Execute
+        .output();
+
+    match command_output {
+        Ok(e) => {
+            let output = std::str::from_utf8(&e.stdout).unwrap();
+            println!("{}", output);
+            Ok(())
+        }
+        Err(e) => Err(format!(
+            "Error rendering blend file {:?}: {:?}",
+            blender_file, e
+        )),
+    }
 }
 
 fn validate(
     blender_file: &PathBuf,
     output_directory: &PathBuf,
     sprite_width: u32,
+    sprite_height: u32,
     num_rotations: u32,
 ) -> Result<(), String> {
     // Validate blender_file
@@ -78,6 +113,11 @@ fn validate(
     // Validate sprite_width is greater than 0
     if sprite_width == 0 {
         return Err("Sprite width must be greater than 0".to_string());
+    }
+
+    // Validate sprite_height is greater than 0
+    if sprite_height == 0 {
+        return Err("Sprite height must be greater than 0".to_string());
     }
 
     // Validate num_rotations is None or greater than 0

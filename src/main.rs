@@ -34,13 +34,15 @@ pub enum Args {
         output_directory: PathBuf,
         /// The width of each sprite in the sheet
         sprite_width: u32,
+        /// The height of each sprite in the sheet
+        sprite_height: u32,
         /// The type of view the sprite sheet will be generated from
         view_type: ViewType,
         /// The number of rotations to generate for each sprite. Only used on 3/4 and isometric views.
         #[clap(default_value = "8")]
         num_rotations: u32,
         /// A comma separated list of animations to generate. If empty, all animations will be generated.
-        #[clap(short, long, required = false)]
+        #[clap(short, long, required = false, default_value = "")]
         animations: String,
     },
 }
@@ -64,11 +66,13 @@ fn main() -> Result<(), String> {
             view_type,
             num_rotations,
             animations,
+            sprite_height,
         } => {
             tasks::blend2sheet::run(
                 blender_file,
                 output_directory,
                 sprite_width,
+                sprite_height,
                 view_type,
                 num_rotations,
                 animations,
