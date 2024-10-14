@@ -27,6 +27,7 @@ pub fn run(
     sprite_width: u32,
     view_type: ViewType,
     num_rotations: u32,
+    animations: String,
 ) -> Result<(), String> {
     validate(
         &blender_file,
@@ -35,6 +36,13 @@ pub fn run(
         num_rotations,
     )?;
 
+    let animations = animations
+        .split(",")
+        .map(|s| s.to_string())
+        .collect::<Vec<String>>();
+
+    // TODO: if animations.is_empty() just use all animations in sheet
+    // TODO: if animation is not found do nothing
     Ok(())
 }
 

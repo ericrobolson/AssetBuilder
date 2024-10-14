@@ -16,9 +16,11 @@ font-map: example_dir
 
 
 blend2sheet-sidescroller: example_dir
-	cargo run -- blend2sheet data/blend2sheet/blend2sheet.blend example_results/blend2sheet/atlas 32 sidescroller
+	cargo run -- blend2sheet data/blend2sheet/blend2sheet.blend example_results/blend2sheet/atlas 32 sidescroller --animations run,jump,hello
 
 # TODO: add one for each view type
+# TODO: add one for no animations in blender file
+# TODO: add one for only some animations in blender file
 
 # Misc utilities
 example_dir: FORCE

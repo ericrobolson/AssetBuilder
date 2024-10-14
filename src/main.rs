@@ -39,6 +39,9 @@ pub enum Args {
         /// The number of rotations to generate for each sprite. Only used on 3/4 and isometric views.
         #[clap(default_value = "8")]
         num_rotations: u32,
+        /// A comma separated list of animations to generate. If empty, all animations will be generated.
+        #[clap(short, long, required = false)]
+        animations: String,
     },
 }
 
@@ -60,6 +63,7 @@ fn main() -> Result<(), String> {
             sprite_width,
             view_type,
             num_rotations,
+            animations,
         } => {
             tasks::blend2sheet::run(
                 blender_file,
@@ -67,6 +71,7 @@ fn main() -> Result<(), String> {
                 sprite_width,
                 view_type,
                 num_rotations,
+                animations,
             )?;
         }
     }

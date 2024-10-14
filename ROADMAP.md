@@ -4,6 +4,7 @@
 - [x] Takes in an output directory
 - [x] Takes in a sprite width
 - [x] Takes in a view type 
+- [x] Add ability to list only certain animations for rendering
 - [ ] Call blender + run script
 - [ ] In script, set camera position based on view type. Add makefile entry 
 - [ ] For each view type, set up a blend file and makefile script to run.
