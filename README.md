@@ -1,6 +1,6 @@
 # AssetBuilder
 
-This repo is used for generating asses used in games. 
+This repo is used for generating assests used in games. 
 
 ## Features
 - `font-map` will take in a string of characters, a TTF font and a location. From there it will rasterize all characters to a spritesheet.
