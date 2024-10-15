@@ -29,6 +29,21 @@ ANIMATIONS = argv[5]
 # Helper functions
 #
 
+def get_camera():
+    for obj in bpy.context.scene.objects:
+        if obj.type == 'CAMERA':
+            return obj
+    return None
+
+def get_light():
+    LIGHTING_NAME = "__renderer_scene_lighting__"
+
+    # remove any existing default lighting in the event we're using a previously rendered scene
+    for obj in bpy.context.scene.objects:
+        if obj.name == LIGHTING_NAME:
+            return obj
+    return None
+
 def set_camera(location, rotation, orthographic = True):
     for obj in bpy.context.scene.objects:
         if obj.type == 'CAMERA':
@@ -91,6 +106,13 @@ def render(animation = "", perspective = ""):
     bpy.ops.render.render(animation=True, write_still=True)
 
 
+def rotate_obj(obj):
+    if obj is None:
+        return
+    euler = Euler((0, 0, radians(45)), 'XYZ')
+    obj.rotation_euler.rotate(euler)
+
+
 #
 # Render
 #
@@ -108,7 +130,6 @@ for scene in bpy.data.scenes:
 
 
 
-# TODO:
 # Need to render separate animations for each action
 for action in bpy.data.actions:
     print(action)
@@ -128,16 +149,47 @@ match VIEW_TYPE:
         set_lighting(rotation(0, light_angle, 0))
         set_camera(position(x, 0, z), rotation(90, 0, 90))
         render(perspective="face-left")
-    case "ThreeQuarter":
-        print("ThreeQuarter")
     case "Isometric":
-        print("Isometric")
+        degs_per_rotation = 360.0 / float(NUM_ROTATIONS)
+        initial_rotation = 0
+
+        # default position + rotation
+        init_x = 0
+        init_y = -15
+        z = 10
+        pos = position(init_x, init_y, z)
+        rot = rotation(60, 0, initial_rotation)
+
+        for rotation_idx in range(0, NUM_ROTATIONS):
+            rot_degs = -degs_per_rotation * rotation_idx
+            rot_rads = radians(rot_degs)
+
+            # Get new position + rotation for camera and light
+            new_x = init_x * cos(rot_rads) + init_y * sin(rot_rads)
+            new_y = -init_x * sin(rot_rads) + init_y * cos(rot_rads)
+
+            pos = position(new_x, new_y, z)
+
+            # Leave this
+            rot = rotation(60, 0, -rot_degs)
+            light_rot = rotation(40, 0, -rot_degs)
+
+            set_lighting(light_rot)
+            set_camera(pos, rot)
+
+            render(perspective=f'rotation-{rotation_idx}')
     case "TopDown":        
         set_lighting(rotation(0, 0, 0))
         set_camera(position(0, 0, z), rotation(0, 0, -90))
         render(perspective="overhead")
     case "AdvanceWarsBattle":
-        print("AdvanceWarsBattle")
+        set_lighting(rotation(71,-9.6,64.5))
+        set_camera(position(14.56,-8.29,6.2), rotation(75,0,-300))
+        render(perspective="face-left")
+
+        set_lighting(rotation(71,7,-55.1))
+        set_camera(position(-36.15,-20.78, 12.962), rotation(75,0,-420))
+        render(perspective="face-right")
     case "PokemonBattle":
         set_lighting(rotation(61, -17, 48))
         set_camera(position(4.6, -11.1, 3.2), rotation(80,0,-338))

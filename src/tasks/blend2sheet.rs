@@ -10,9 +10,6 @@ use std::process::Command;
 pub enum ViewType {
     /// Classic platformer view.
     Sidescroller,
-    /// 3/4 view. Example would be the game boy Legend of Zeldas.
-    #[clap(name = "3/4")]
-    ThreeQuarter,
     /// Isometric view like Diablo.
     Isometric,
     /// Top down view like in Hotline Miami.

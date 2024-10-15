@@ -20,9 +20,6 @@ blend2sheet-no-anim-internal-camera: example_dir
 blend2sheet-no-anim-sidescroller: example_dir
 	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 sidescroller
 
-blend2sheet-no-anim-three-quarter: example_dir
-	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 3/4 --num-rotations 4
-
 blend2sheet-no-anim-isometric: example_dir
 	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 isometric --num-rotations 8
 
@@ -30,7 +27,7 @@ blend2sheet-no-anim-top-down: example_dir
 	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 top-down
 
 blend2sheet-no-anim-advance-wars-battle: example_dir
-	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 advance-wars-battle
+	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 32 32 advance-wars-battle
 
 blend2sheet-no-anim-pokemon-battle: example_dir
 	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 pokemon-battle

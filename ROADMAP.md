@@ -8,10 +8,8 @@
 - [x] Call blender + run script
 - [x] In script, set camera position based on view type. Add makefile entry 
 - [x] Get basic no animation original camera working
-- [ ] Setup views for each other view that doesn't have an animation
-- [ ] Make a blender file with two/three actions
-- [ ] Set up scripts for each other view to use
-- [ ] Implement rendering for each other view + makefile
+- [x] Setup views for each other view that doesn't have an animation
+- [ ] Implement rendering for animations
 - [ ] Stitch together things into animations + spritesheets
 - [ ] Test out no animation spritesheets
 - [ ] Experiment with adding Rayon
