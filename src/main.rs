@@ -39,7 +39,7 @@ pub enum Args {
         /// The type of view the sprite sheet will be generated from
         view_type: ViewType,
         /// The number of rotations to generate for each sprite. Only used on 3/4 and isometric views.
-        #[clap(default_value = "8")]
+        #[clap(short, long, required = false, default_value = "8")]
         num_rotations: u32,
         /// A comma separated list of animations to generate. If empty, all animations will be generated.
         #[clap(short, long, required = false, default_value = "")]
