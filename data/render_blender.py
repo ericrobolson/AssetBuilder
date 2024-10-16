@@ -35,14 +35,24 @@ def get_camera():
             return obj
     return None
 
+LIGHTING_NAME = "__renderer_scene_lighting__"
+
 def get_light():
-    LIGHTING_NAME = "__renderer_scene_lighting__"
 
     # remove any existing default lighting in the event we're using a previously rendered scene
     for obj in bpy.context.scene.objects:
         if obj.name == LIGHTING_NAME:
             return obj
     return None
+
+def skip_action_setting(obj):
+    if obj is None:
+        return True
+    if obj.type == 'CAMERA':
+        return True
+    if obj.name == LIGHTING_NAME:
+        return True
+    return False
 
 def set_camera(location, rotation, orthographic = True):
     for obj in bpy.context.scene.objects:
@@ -129,26 +139,45 @@ for scene in bpy.data.scenes:
         scene.eevee.taa_render_samples = AA_SAMPLES
 
 
-
-# Need to render separate animations for each action
-for action in bpy.data.actions:
-    print(action)
-
 # Render different perspectives
 x = 2
 z = 2
 light_angle = 60
+
+
+def render_sidescroller(animation = ""):
+    set_lighting(rotation(0, 60, -180))
+    set_camera(position(-2, 0, 2), rotation(90, 0, -90))
+    render(perspective="face-right")
+
+    set_lighting(rotation(0, 60, 0))
+    set_camera(position(2, 0, 2), rotation(90, 0, 90))
+    render(perspective="face-left", animation=animation)
+
+def perform_render(render_func):
+    # TODO: what about no actions?
+
+    for action in bpy.data.actions:
+        bpy.context.scene.frame_start = int(action.frame_start)
+        bpy.context.scene.frame_end = int(action.frame_end)
+
+        # for scene in bpy.data.scenes:
+        #     scene.frame_start = int(action.frame_start)
+        #     scene.frame_end = int(action.frame_end)
+     
+        for obj in bpy.data.objects:
+            if obj.animation_data:
+                if skip_action_setting(obj) == False:
+                    obj.animation_data.action = action
+
+        render_func(action.name)
+
 match VIEW_TYPE:
     case "InternalCamera":
         render(perspective="camera")
-    case "Sidescroller":              
-        set_lighting(rotation(0, light_angle, -180))
-        set_camera(position(-x, 0, z), rotation(90, 0, -90))
-        render(perspective="face-right")
-
-        set_lighting(rotation(0, light_angle, 0))
-        set_camera(position(x, 0, z), rotation(90, 0, 90))
-        render(perspective="face-left")
+    case "Sidescroller":
+        #TODO: what to do about no actions?
+        render_sidescroller()
     case "Isometric":
         degs_per_rotation = 360.0 / float(NUM_ROTATIONS)
         initial_rotation = 0

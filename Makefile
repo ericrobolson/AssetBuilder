@@ -33,8 +33,26 @@ blend2sheet-no-anim-pokemon-battle: example_dir
 	cargo run -- blend2sheet data/blender/SuzanneNoLighting.blend example_results/blend2sheet/atlas 128 128 pokemon-battle
 
 ### Multiple animations
+blend2sheet-anim-internal-camera: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 320 240 internal-camera
 
-# TODO: Add examples for multiple animations
+# TODO: Add examples for multiple animations; change to not use lighting
+
+blend2sheet-anim-sidescroller: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller
+
+blend2sheet-anim-isometric: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 isometric --num-rotations 8
+
+blend2sheet-anim-top-down: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 top-down
+
+blend2sheet-anim-advance-wars-battle: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 32 32 advance-wars-battle
+
+blend2sheet-anim-pokemon-battle: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 pokemon-battle
+
 
 # Misc utilities
 example_dir: FORCE
