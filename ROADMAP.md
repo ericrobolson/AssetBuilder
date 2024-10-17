@@ -9,7 +9,8 @@
 - [x] In script, set camera position based on view type. Add makefile entry 
 - [x] Get basic no animation original camera working
 - [x] Setup views for each other view that doesn't have an animation
-- [ ] Implement rendering for animations
+- [x] Implement rendering for animations for side scroller
+- [ ] Abstract sidescroller stuff to other views
 - [ ] Stitch together things into animations + spritesheets
 - [ ] Test out no animation spritesheets
 - [ ] Experiment with adding Rayon

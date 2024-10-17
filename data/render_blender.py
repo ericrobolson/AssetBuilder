@@ -10,7 +10,7 @@ FILE = bpy.path.basename(bpy.context.blend_data.filepath)  # Also the animation
 FILE_NAME = FILE.replace(".blend", "")
 
 # Some defaults
-ORTHO_SCALE = 5.0
+ORTHO_SCALE = 5
 AA_SAMPLES = 16
 
 # Parse args
@@ -29,11 +29,6 @@ ANIMATIONS = argv[5]
 # Helper functions
 #
 
-def get_camera():
-    for obj in bpy.context.scene.objects:
-        if obj.type == 'CAMERA':
-            return obj
-    return None
 
 LIGHTING_NAME = "__renderer_scene_lighting__"
 
@@ -55,25 +50,40 @@ def skip_action_setting(obj):
     return False
 
 def set_camera(location, rotation, orthographic = True):
-    for obj in bpy.context.scene.objects:
-        if obj.type == 'CAMERA':
-            # Set the position
-            obj.location = location
-            obj.rotation_euler = rotation
-            
-            if orthographic:
-                # Convert camera to orthographic
-                obj.data.type = 'ORTHO'
-                obj.data.ortho_scale = ORTHO_SCALE
-                obj.data.clip_start = 0.001
-                obj.data.clip_end = 100.0
+    CAMERA_NAME = "__renderer_scene_camera__"
 
+    # Remove existing cameras
+    for obj in bpy.data.objects:
+        if obj.type == 'CAMERA':
+            obj.select_set(True)
+            bpy.ops.object.delete()
+
+    # Create new camera
+    camera_data = bpy.data.cameras.new(name=CAMERA_NAME)
+    camera = bpy.data.objects.new(name=CAMERA_NAME, object_data=camera_data)
+    bpy.context.scene.collection.objects.link(camera)
+    bpy.context.scene.camera = camera
+
+    # make it active
+    bpy.context.view_layer.objects.active = camera
+
+    # change props
+    print(location)
+    camera.location = location
+    camera.rotation_euler = rotation
+
+    if orthographic:
+        # Convert camera to orthographic
+        camera.data.type = 'ORTHO'
+        camera.data.ortho_scale = ORTHO_SCALE
+        camera.data.clip_start = 0.001
+        camera.data.clip_end = 100.0
 
 def set_lighting(rotation):
     LIGHTING_NAME = "__renderer_scene_lighting__"
 
     # remove any existing default lighting in the event we're using a previously rendered scene
-    for obj in bpy.context.scene.objects:
+    for obj in bpy.data.objects:
         if obj.name == LIGHTING_NAME:
             obj.select_set(True)
             bpy.ops.object.delete()
@@ -96,9 +106,6 @@ def set_lighting(rotation):
     light_object.location = (0, 0, 10)
     light_object.rotation_euler = rotation
 
-    # update scene, if needed
-    dg = bpy.context.evaluated_depsgraph_get()
-    dg.update()
 
 def position(x, y, z):
     return Vector((x, y, z))
@@ -154,29 +161,78 @@ def render_sidescroller(animation = ""):
     set_camera(position(2, 0, 2), rotation(90, 0, 90))
     render(perspective="face-left", animation=animation)
 
-def perform_render(render_func):
-    # TODO: what about no actions?
+def undo_animation(obj):
+    if obj is None:
+        return
+    if obj.animation_data is None:
+        return
+    if obj.animation_data and obj.animation_data.nla_tracks:
+        for nt in obj.animation_data.nla_tracks:
+            obj.animation_data.nla_tracks.remove(nt)
+    if obj.animation_data and obj.animation_data.drivers:
+        for dr in obj.animation_data.drivers:
+                obj.animation_data.drivers.remove(dr)
+    obj.animation_data.action = None
 
+
+def render_sidescroller():
+    perspectives = [
+        {
+            "light_rotation": rotation(0, 60, -180),
+            "camera_position": position(-2, 0, 2),
+            "camera_rotation": rotation(90, 0, -90),
+            "perspective": "face-right"
+        },
+        {
+            "light_rotation": rotation(0, 60, 0),
+            "camera_position": position(2, 0, 2),
+            "camera_rotation": rotation(90, 0, 90),
+            "perspective": "face-left"
+        }
+    ]
+    perform_render(perspectives)
+
+def perform_render(perspectives):
+    # Do static renders
+    if not bpy.data.actions:
+        for perspective in perspectives:
+            set_lighting(perspective["light_rotation"])
+            set_camera(perspective["camera_position"], perspective["camera_rotation"])
+            render(perspective=perspective["perspective"])
+
+
+    # Do animations
     for action in bpy.data.actions:
+        # Set frame range
+        animation_name = action.name
+
         bpy.context.scene.frame_start = int(action.frame_start)
         bpy.context.scene.frame_end = int(action.frame_end)
 
-        # for scene in bpy.data.scenes:
-        #     scene.frame_start = int(action.frame_start)
-        #     scene.frame_end = int(action.frame_end)
-     
-        for obj in bpy.data.objects:
-            if obj.animation_data:
-                if skip_action_setting(obj) == False:
-                    obj.animation_data.action = action
+        for scene in bpy.data.scenes:
+            scene.frame_start = int(action.frame_start)
+            scene.frame_end = int(action.frame_end)
 
-        render_func(action.name)
+        # Set action for armatures
+        for obj in bpy.data.objects:
+            if obj.animation_data and obj.type == 'ARMATURE':
+                obj.animation_data.action = action
+
+        # Render perspectives
+        for perspective in perspectives:
+            set_lighting(perspective["light_rotation"])
+            set_camera(perspective["camera_position"], perspective["camera_rotation"])
+            render(perspective=perspective["perspective"], animation=animation_name)
+
+        # Reset
+        for obj in bpy.data.objects:
+            undo_animation(obj)
 
 match VIEW_TYPE:
+
     case "InternalCamera":
         render(perspective="camera")
     case "Sidescroller":
-        #TODO: what to do about no actions?
         render_sidescroller()
     case "Isometric":
         degs_per_rotation = 360.0 / float(NUM_ROTATIONS)

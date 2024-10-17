@@ -15,6 +15,7 @@ This repo is used for generating assests used in games.
 - - - `internal-camera` view type simply uses the Blender camera and all its settings.
 - - - `--num-rotations INT` is an optional argument that is only applicable for isometric views. 
 - - - `--animations CSV_ANIMATIONS_LIST` is an optional argument that takes a CSV list of animations. When provided it will only render those animations.
+- - - If there are errors, try deleting all default lights as well as any default cameras.
 
 ## Examples
 Look at the `Makefile` to see a list of example invocations. 
