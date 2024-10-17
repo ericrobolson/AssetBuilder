@@ -113,12 +113,11 @@ def rotation(x, y, z):
     rotation_rads = (math.radians(x), math.radians(y), math.radians(z))
     return Euler(rotation_rads)
 
-
 # Triggers a render
 def render(animation = "", perspective = ""):
     # Trigger render
     # Use '_ESCAPED' to prevent blender file names from mucking with the Rust parsing.
-    bpy.context.scene.render.filepath = f'{CWD}/{OUTPUT_DIRECTORY}/{FILE_NAME}_{VIEW_TYPE}_ANIMATION-{animation}_PERSPECTIVE-{perspective}_FRAMENUMBER-'
+    bpy.context.scene.render.filepath = f'{CWD}/{OUTPUT_DIRECTORY}/.tmp/{FILE_NAME}_{VIEW_TYPE}_ANIMATION-{animation}_PERSPECTIVE-{perspective}_FRAMENUMBER-'
     bpy.ops.render.render(animation=True, write_still=True)
 
 
@@ -181,10 +180,14 @@ def perform_render(perspectives):
         for perspective in perspectives:
             set_lighting(perspective["light_rotation"])
             set_camera(perspective["camera_position"], perspective["camera_rotation"])
-            render(perspective=perspective["perspective"])
+            render(perspective=perspective["perspective"], animation="default")
 
     # Do animations
     for action in bpy.data.actions:
+        # Continue if we're only rendering specific animations
+        if not should_render_animation(action.name):
+            continue
+
         # Set frame range
         animation_name = action.name
 
@@ -209,6 +212,12 @@ def perform_render(perspectives):
         # Reset
         for obj in bpy.data.objects:
             undo_animation(obj)
+    
+def should_render_animation(anim_name):
+    if ANIMATIONS == "":
+        return True
+    
+    return anim_name in ANIMATIONS.split(",")
 
 def render_sidescroller():
     perspectives = [

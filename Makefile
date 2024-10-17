@@ -51,6 +51,16 @@ blend2sheet-anim-advance-wars-battle: example_dir
 blend2sheet-anim-pokemon-battle: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 pokemon-battle
 
+## Specified animations
+
+blend2sheet-two-anims-sidescroller: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller --animations "Walk,Idle"
+
+blend2sheet-one-anims-sidescroller: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller --animations "Walk"
+
+blend2sheet-no-anims-sidescroller: example_dir
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller --animations "DOESNTEXIST"
 
 # Misc utilities
 example_dir: FORCE
