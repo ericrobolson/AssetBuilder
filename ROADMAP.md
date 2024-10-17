@@ -10,7 +10,8 @@
 - [x] Get basic no animation original camera working
 - [x] Setup views for each other view that doesn't have an animation
 - [x] Implement rendering for animations for side scroller
-- [ ] Abstract sidescroller stuff to other views
+- [x] Abstract sidescroller stuff to other views
+- [ ] Add ability to specify animations to use when rendering as CLI arg +implement in python
 - [ ] Stitch together things into animations + spritesheets
 - [ ] Test out no animation spritesheets
 - [ ] Experiment with adding Rayon

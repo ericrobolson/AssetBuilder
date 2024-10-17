@@ -68,7 +68,6 @@ def set_camera(location, rotation, orthographic = True):
     bpy.context.view_layer.objects.active = camera
 
     # change props
-    print(location)
     camera.location = location
     camera.rotation_euler = rotation
 
@@ -175,23 +174,7 @@ def undo_animation(obj):
     obj.animation_data.action = None
 
 
-def render_sidescroller():
-    perspectives = [
-        {
-            "light_rotation": rotation(0, 60, -180),
-            "camera_position": position(-2, 0, 2),
-            "camera_rotation": rotation(90, 0, -90),
-            "perspective": "face-right"
-        },
-        {
-            "light_rotation": rotation(0, 60, 0),
-            "camera_position": position(2, 0, 2),
-            "camera_rotation": rotation(90, 0, 90),
-            "perspective": "face-left"
-        }
-    ]
-    perform_render(perspectives)
-
+# Perform renders for all animations and perspectives
 def perform_render(perspectives):
     # Do static renders
     if not bpy.data.actions:
@@ -199,7 +182,6 @@ def perform_render(perspectives):
             set_lighting(perspective["light_rotation"])
             set_camera(perspective["camera_position"], perspective["camera_rotation"])
             render(perspective=perspective["perspective"])
-
 
     # Do animations
     for action in bpy.data.actions:
@@ -228,61 +210,120 @@ def perform_render(perspectives):
         for obj in bpy.data.objects:
             undo_animation(obj)
 
-match VIEW_TYPE:
+def render_sidescroller():
+    perspectives = [
+        {
+            "light_rotation": rotation(0, 60, -180),
+            "camera_position": position(-2, 0, 2),
+            "camera_rotation": rotation(90, 0, -90),
+            "perspective": "face-right"
+        },
+        {
+            "light_rotation": rotation(0, 60, 0),
+            "camera_position": position(2, 0, 2),
+            "camera_rotation": rotation(90, 0, 90),
+            "perspective": "face-left"
+        }
+    ]
+    perform_render(perspectives)
 
+
+def render_isometric():
+    perspectives = []
+
+    degs_per_rotation = 360.0 / float(NUM_ROTATIONS)
+
+    # default position + rotation
+    init_x = 0
+    init_y = -15
+    z = 10
+
+    for rotation_idx in range(0, NUM_ROTATIONS):
+        rot_degs = -degs_per_rotation * rotation_idx
+        rot_rads = radians(rot_degs)
+
+        # Get new position + rotation for camera and light
+        new_x = init_x * cos(rot_rads) + init_y * sin(rot_rads)
+        new_y = -init_x * sin(rot_rads) + init_y * cos(rot_rads)
+
+        camera_position = position(new_x, new_y, z)
+        camera_rot = rotation(60, 0, -rot_degs)
+
+        light_rot = rotation(40, 0, -rot_degs)
+
+        # Build perspective to render
+        perspective = {
+            "light_rotation": light_rot,
+            "camera_position": camera_position,
+            "camera_rotation": camera_rot,
+            "perspective": f'rotation-{rotation_idx}'
+        }
+
+        perspectives.append(perspective)
+
+    perform_render(perspectives)
+
+def render_pokemon_battle():
+    perspectives = [
+        {
+            "light_rotation": rotation(61, -17, 48),
+            "camera_position": position(4.6, -11.1, 3.2),
+            "camera_rotation": rotation(80, 0, -338),
+            "perspective": "face"
+        },
+        {
+            "light_rotation": rotation(-36, 57, 62),
+            "camera_position": position(-3.4, 11.2, 3.7),
+            "camera_rotation": rotation(78, 0, -162),
+            "perspective": "back"
+        }
+    ]
+    perform_render(perspectives)
+
+def render_top_down():
+    perspectives = [
+        {
+            "light_rotation": rotation(0, 0, 0),
+            "camera_position": position(0, 0, z),
+            "camera_rotation": rotation(0, 0, -90),
+            "perspective": "overhead"
+        }
+    ]
+
+    perform_render(perspectives)
+
+def render_advance_wars_battle():
+    perspectives = [
+        {
+            "light_rotation": rotation(71, -9.6, 64.5),
+            "camera_position": position(14.56, -8.29, 6.2),
+            "camera_rotation": rotation(75, 0, -300),
+            "perspective": "face-left"
+        },
+        {
+            "light_rotation": rotation(71, 7, -55.1),
+            "camera_position": position(-36.15, -20.78, 12.962),
+            "camera_rotation": rotation(75, 0, -420),
+            "perspective": "face-right"
+        }
+    ]
+
+    perform_render(perspectives)
+
+# Perform renders based on the VIEW_TYPE
+match VIEW_TYPE:
     case "InternalCamera":
         render(perspective="camera")
     case "Sidescroller":
         render_sidescroller()
     case "Isometric":
-        degs_per_rotation = 360.0 / float(NUM_ROTATIONS)
-        initial_rotation = 0
-
-        # default position + rotation
-        init_x = 0
-        init_y = -15
-        z = 10
-        pos = position(init_x, init_y, z)
-        rot = rotation(60, 0, initial_rotation)
-
-        for rotation_idx in range(0, NUM_ROTATIONS):
-            rot_degs = -degs_per_rotation * rotation_idx
-            rot_rads = radians(rot_degs)
-
-            # Get new position + rotation for camera and light
-            new_x = init_x * cos(rot_rads) + init_y * sin(rot_rads)
-            new_y = -init_x * sin(rot_rads) + init_y * cos(rot_rads)
-
-            pos = position(new_x, new_y, z)
-
-            # Leave this
-            rot = rotation(60, 0, -rot_degs)
-            light_rot = rotation(40, 0, -rot_degs)
-
-            set_lighting(light_rot)
-            set_camera(pos, rot)
-
-            render(perspective=f'rotation-{rotation_idx}')
+        render_isometric()       
     case "TopDown":        
-        set_lighting(rotation(0, 0, 0))
-        set_camera(position(0, 0, z), rotation(0, 0, -90))
-        render(perspective="overhead")
+        render_top_down()
     case "AdvanceWarsBattle":
-        set_lighting(rotation(71,-9.6,64.5))
-        set_camera(position(14.56,-8.29,6.2), rotation(75,0,-300))
-        render(perspective="face-left")
-
-        set_lighting(rotation(71,7,-55.1))
-        set_camera(position(-36.15,-20.78, 12.962), rotation(75,0,-420))
-        render(perspective="face-right")
+        render_advance_wars_battle()
     case "PokemonBattle":
-        set_lighting(rotation(61, -17, 48))
-        set_camera(position(4.6, -11.1, 3.2), rotation(80,0,-338))
-        render(perspective="face")
-
-        set_lighting(rotation(-36, 57, 62))
-        set_camera(position(-3.4,11.2,3.7), rotation(78, 0, -162))
-        render(perspective="back")
+        render_pokemon_battle()
     case default:
         print("UNKNOWN VIEW_TYPE: " + VIEW_TYPE)
         sys.exit(1)

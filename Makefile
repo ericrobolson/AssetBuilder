@@ -36,8 +36,6 @@ blend2sheet-no-anim-pokemon-battle: example_dir
 blend2sheet-anim-internal-camera: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 320 240 internal-camera
 
-# TODO: Add examples for multiple animations; change to not use lighting
-
 blend2sheet-anim-sidescroller: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller
 
