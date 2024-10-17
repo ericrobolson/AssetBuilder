@@ -1,26 +1,35 @@
+## Misc eventually todos
+
+- [ ] TODO: test on windows
+
 ## Unity asset 2 blender converter?
+
 - Not sure if this is needed, but certainly would be nice
 
 ## Blender Spritesheet Generator
+
 - [x] Build out new CLI option
 - [x] Takes in a blender project name
 - [x] Takes in an output directory
 - [x] Takes in a sprite width
-- [x] Takes in a view type 
+- [x] Takes in a view type
 - [x] Add ability to list only certain animations for rendering
 - [x] Call blender + run script
-- [x] In script, set camera position based on view type. Add makefile entry 
+- [x] In script, set camera position based on view type. Add makefile entry
 - [x] Get basic no animation original camera working
 - [x] Setup views for each other view that doesn't have an animation
 - [x] Implement rendering for animations for side scroller
 - [x] Abstract sidescroller stuff to other views
 - [x] Add ability to specify animations to use when rendering as CLI arg +implement in python
+- [x] Get working on MacOS
 - [ ] Stitch together things into animations + spritesheets
+- [ ] Verify it still works on Linux
 - [ ] Test out no animation spritesheets
 - [ ] Experiment with adding Rayon
 
 ## 24-10-14 Font bitmap sheet
-- Takes in text and a font file, then generates a spritesheet with coordinates to each character. 
+
+- Takes in text and a font file, then generates a spritesheet with coordinates to each character.
 - [x] Add in a new CLI option to the main program
 - [x] Specify a font file
 - [x] Specify a file or folder for reading text files

@@ -1,7 +1,5 @@
 use clap::{Parser, ValueEnum};
-use std::fs::DirEntry;
-use std::fs::File;
-use std::io::prelude::*;
+use core::panic;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -20,6 +18,32 @@ pub enum ViewType {
     PokemonBattle,
     /// Use the internal blender camera and all its settings.
     InternalCamera,
+}
+
+pub fn get_blender_location() -> String {
+    // List different potential paths this can be, then iterate over them to find the proper one.
+
+    let mut options = vec![
+        "blender".to_string(),
+        "/Applications/Blender.app/Contents/MacOS/Blender".to_string(),
+    ];
+
+    if let Ok(output) = Command::new("which").arg("blender").output() {
+        let output = std::str::from_utf8(&output.stdout).unwrap();
+        options.push(output.trim().to_string());
+    }
+
+    // Now iterate over them and see which one exists
+    for option in options {
+        if let Ok(output) = Command::new(&option).arg("--version").output() {
+            let output = std::str::from_utf8(&output.stdout).unwrap();
+            if output.is_empty() == false {
+                return option;
+            }
+        }
+    }
+
+    panic!("Could not find blender executable; error 4004b");
 }
 
 pub fn run(
@@ -44,8 +68,14 @@ pub fn run(
     )?;
 
     let script_path = PathBuf::from("data/render_blender.py");
+    let current_dur = std::env::current_dir().unwrap();
+    println!("Current directory: {:?}", current_dur);
+    let blender_file = current_dur.join(blender_file);
+    let script_path = current_dur.join(script_path);
+    println!("script: {:?}", script_path);
 
-    let command_output = Command::new("blender")
+    let blender_exe = get_blender_location();
+    let command_output = Command::new(blender_exe)
         .arg("-b")
         .arg(blender_file.clone())
         // Load a python script
@@ -68,13 +98,13 @@ pub fn run(
         Ok(e) => {
             let output = std::str::from_utf8(&e.stdout).unwrap();
             println!("{}", output);
-            Ok(())
         }
-        Err(e) => Err(format!(
-            "Error rendering blend file {:?}: {:?}",
-            blender_file, e
-        )),
+        Err(e) => return Err(format!("{:?}", e)),
     }
+
+    // Now stitch together the sprite sheet
+    // TODO:
+    Ok(())
 }
 
 fn validate(
