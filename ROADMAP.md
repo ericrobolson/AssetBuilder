@@ -1,3 +1,6 @@
+## Unity asset 2 blender converter?
+- Not sure if this is needed, but certainly would be nice
+
 ## Blender Spritesheet Generator
 - [x] Build out new CLI option
 - [x] Takes in a blender project name

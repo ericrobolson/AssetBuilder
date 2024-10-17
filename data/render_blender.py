@@ -117,7 +117,7 @@ def rotation(x, y, z):
 def render(animation = "", perspective = ""):
     # Trigger render
     # Use '_ESCAPED' to prevent blender file names from mucking with the Rust parsing.
-    bpy.context.scene.render.filepath = f'{CWD}/{OUTPUT_DIRECTORY}/.tmp/{FILE_NAME}_{VIEW_TYPE}_ANIMATION-{animation}_PERSPECTIVE-{perspective}_FRAMENUMBER-'
+    bpy.context.scene.render.filepath = f'{CWD}/{OUTPUT_DIRECTORY}/.tmp/[FILE-{FILE_NAME}]_[VIEWTYPE-{VIEW_TYPE}]_[ANIMATION-{animation}]_[PERSPECTIVE-{perspective}]_FRAMENUMBER-'
     bpy.ops.render.render(animation=True, write_still=True)
 
 
