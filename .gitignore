@@ -2,3 +2,5 @@ target/
 .*
 !.git*
 example_results/
+*.blend*
+!*.blend
