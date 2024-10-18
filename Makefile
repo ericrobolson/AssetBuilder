@@ -12,6 +12,11 @@ font-map-help: example_dir
 font-map: example_dir
 	cargo run -- font-map data/fonts/Open_Sans/OpenSans-Regular.ttf "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUFWXYZ0123456789,.?!@#$%^&()_+-"	example_results/font-map/atlas --font-scale 64.0
 
+
+font-map-pixel: example_dir
+	cargo run -- font-map data/fonts/Open_Sans/OpenSans-Regular.ttf "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUFWXYZ0123456789,.?!@#$%^&()_+-"	example_results/font-map/atlas --font-scale 24.0
+
+
 ## Blend2Sheet
 ### No animations
 blend2sheet-no-anim-internal-camera: example_dir

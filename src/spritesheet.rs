@@ -1,26 +1,15 @@
-use core::panic;
 use image::{DynamicImage, GenericImage, GenericImageView};
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::PathBuf};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-enum Mask {
-    Empty,
-    Filled,
-}
-impl Default for Mask {
-    fn default() -> Self {
-        Self::Empty
-    }
-}
-
+/// A rectangle that contains an image and its position in the sprite sheet.
+/// This is used to pack the images into the sprite sheet.
 struct Rect {
     animation: String,
     frame_index: usize,
     image: DynamicImage,
     x: u32,
     y: u32,
-    was_packed: bool,
 }
 
 /// A sprite sheet that contains a collection of sprites and an image
@@ -69,7 +58,6 @@ impl SpriteSheetBuilder {
         let mut top_left_offset_x = min_x;
         let mut top_left_offset_y = min_y;
 
-        // TODO: handle if img is empty!
         let img_is_empty = min_x == img.width() - 1 || min_y == img.height() - 1;
         let image = if img_is_empty {
             // Pretty weak but we'll just return an empty image.
@@ -114,7 +102,6 @@ impl SpriteSheetBuilder {
             image: image,
             x: 0,
             y: 0,
-            was_packed: false,
         });
     }
 
@@ -126,7 +113,8 @@ impl SpriteSheetBuilder {
             ));
         }
 
-        // We'll 'optimally' pack the atlas by using the naive algorithm of sorting by height
+        // We'll pack the atlas by using the naive algorithm of sorting by height.
+        // I got better things to do.
         // https://www.david-colson.com/2020/03/10/exploring-rect-packing.html
 
         // Sort rectangles by img height
@@ -185,8 +173,6 @@ impl SpriteSheetBuilder {
             if rect.image.height() > largest_height_this_row {
                 largest_height_this_row = rect.image.height();
             }
-
-            rect.was_packed = true;
         }
 
         // Write rectangles to the image as well as frame data
@@ -216,16 +202,16 @@ impl SpriteSheetBuilder {
 
         // Save image
         let img_path = format!("{}.png", path.as_os_str().to_str().unwrap());
-        image.save(img_path).unwrap();
+        image.save(&img_path).unwrap();
 
         // Save json
         let json_path = format!("{}.json", path.as_os_str().to_str().unwrap());
         let json = serde_json::to_string_pretty(&self.sheet).unwrap();
         std::fs::write(&json_path, json).unwrap();
 
-        println!("Saved sprite sheet to {:?}", path);
+        println!("Saved JSON to {:?}", json_path);
+        println!("Saved sprite sheet to {:?}", img_path);
         println!("Width: {}, Height: {}", width, height);
-        println!("Saved json to {:?}", json_path);
 
         Ok(())
     }

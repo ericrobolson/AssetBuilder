@@ -5,7 +5,7 @@ This repo is used for generating assests used in games.
 ## Features
 - `font-map` will take in a string of characters, a TTF font and a location. From there it will rasterize all characters to a spritesheet.
 - - `font-map {TTF_FILE} {TEXT_TO_RENDER} {OUTPUT_DIR} [--font-scale {FLOAT}]
-- `blend2sheet` will take in a Blender file, a view type, and generate a spritesheet based on the animations included if they exist. 
+- `blend2sheet` will take in a Blender file, a view type, and generate a spritesheet based on the animations included if they exist. The resulting file will be a power of 2 to minimize GPU hiccups.
 - - `blend2sheet {BLENDER_FILE} {OUTPUT_DIR} {SPRITE_WIDTH} {SPRITE_HEIGHT} [sidescroller isometric top-down advance-wars-battle pokemon-battle camera] [--num-rotations {INT}] [--animations {CSV_ANIMATION_LIST}]`
 - - - `sidescroller` view type renders the sprite in a platformer view
 - - - `isometric` view type renders the sprite in an isometric view
