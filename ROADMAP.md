@@ -22,9 +22,11 @@
 - [x] Abstract sidescroller stuff to other views
 - [x] Add ability to specify animations to use when rendering as CLI arg +implement in python
 - [x] Get working on MacOS
-- [ ] Stitch together things into animations + spritesheets
+- [x] Stitch together things into animations + spritesheets
+- [x] Test out no animation spritesheets
 - [ ] Verify it still works on Linux
-- [ ] Test out no animation spritesheets
+- [ ] Get this working on Monogame/other engines immediately. After it's working only then should you look into densely packing spritesheets. This way you can make sure things work as expected.
+- [ ] Convert it to densely pack spritesheets. E.g. for each frame, figure out what you can trim then update the offset stuff for that. May need to calculate the 'center' as well for the animation. Perhaps you always assume the sprite is drawn from (0,0), then an offset is included that tells you how much to add?
 - [ ] Experiment with adding Rayon
 
 ## 24-10-14 Font bitmap sheet

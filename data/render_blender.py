@@ -119,7 +119,7 @@ def render(animation = "", perspective = ""):
     # Use '_ESCAPED' to prevent blender file names from mucking with the Rust parsing.
     if animation != "" or perspective != "":
         print(f"Render animation: {animation}, perspective: {perspective}")
-    bpy.context.scene.render.filepath = f'{CWD}/{OUTPUT_DIRECTORY}/.tmp/[FILE-{FILE_NAME}]_[VIEWTYPE-{VIEW_TYPE}]_[ANIMATION-{animation}]_[PERSPECTIVE-{perspective}]_FRAMENUMBER-'
+    bpy.context.scene.render.filepath = f'{CWD}/{OUTPUT_DIRECTORY}/[FILE-{FILE_NAME}]_[VIEWTYPE-{VIEW_TYPE}]_[ANIMATION-{animation}]_[PERSPECTIVE-{perspective}]_FRAMENUMBER-'
     bpy.ops.render.render(animation=True, write_still=True)
 
 

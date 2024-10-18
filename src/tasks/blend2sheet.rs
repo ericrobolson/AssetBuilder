@@ -1,7 +1,10 @@
 use clap::{Parser, ValueEnum};
 use core::panic;
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::process::Command;
+
+use crate::spritesheet::SpriteSheetBuilder;
 
 /// The type of view the sprite sheet will be generated from
 #[derive(Parser, ValueEnum, Clone, Debug)]
@@ -67,13 +70,146 @@ pub fn run(
         num_rotations,
     )?;
 
+    //
+    // Render all frames and animations
+    //
+
+    let blender_render_dir = output_directory.join(".blender_render");
+
+    std::fs::create_dir_all(&output_directory).unwrap();
+    std::fs::create_dir_all(&blender_render_dir).unwrap();
+
     let script_path = PathBuf::from("data/render_blender.py");
     let current_dur = std::env::current_dir().unwrap();
-    println!("Current directory: {:?}", current_dur);
+
     let blender_file = current_dur.join(blender_file);
     let script_path = current_dur.join(script_path);
-    println!("script: {:?}", script_path);
 
+    render_animations(
+        blender_file,
+        script_path.clone(),
+        sprite_width,
+        sprite_height,
+        view_type.clone(),
+        num_rotations,
+        animations.clone(),
+        blender_render_dir.clone(),
+    )?;
+
+    //
+    // Now stitch together the sprite sheet
+    //
+
+    // List out all .png files in the output directory
+    let files = std::fs::read_dir(&blender_render_dir)
+        .unwrap()
+        .map(|res| res.map(|e| e.path()))
+        .collect::<Result<Vec<_>, std::io::Error>>()
+        .unwrap();
+
+    // Helper function to extract the value of a key from a file name
+    let find_value = |key: &str, contents: &str| -> String {
+        let idx = contents.find(&key).expect(&format!(
+            "Could not find '{}-name]' in file {}",
+            key, contents
+        ));
+        let value = &contents[idx..];
+        let value = value.split("]").collect::<Vec<&str>>()[0];
+        value.replace(&key, "").trim().to_string()
+    };
+
+    // For each rendered file, extract the view type, file, animation, and perspective
+    // then add it to the animations hashmap
+    let mut animations: HashMap<String, Vec<PathBuf>> = HashMap::new();
+    let mut name: Option<String> = None;
+    for path in files {
+        let s = path.to_str().unwrap();
+        let view_type = find_value("[VIEWTYPE-", s);
+        let file = find_value("[FILE-", s);
+        let animation = find_value("[ANIMATION-", s);
+        let perspective = find_value("[PERSPECTIVE-", s);
+
+        name = Some(file.clone());
+
+        let key = format!("{}.{}.{}.{}", file, view_type, animation, perspective);
+
+        if !animations.contains_key(&key) {
+            animations.insert(key.clone(), Vec::new());
+        }
+
+        animations.get_mut(&key).unwrap().push(path.clone());
+    }
+
+    // Sort every animation so everything is properly ordered
+    for (_, v) in animations.iter_mut() {
+        v.sort();
+    }
+
+    // Now that we have all animations, let's load them and determine the size of the sprite sheet
+    let mut sheet_w = 0;
+    let mut sheet_h = 0;
+
+    let mut animation_images = HashMap::new();
+    for (animation, frames) in animations.iter() {
+        let mut w = 0;
+        let mut h = 0;
+
+        let mut images = vec![];
+
+        for frame in frames {
+            // Load image
+            let img = image::open(frame).unwrap();
+
+            // Increment the width and height for the animation
+            w += img.width();
+            h = img.height().max(h);
+
+            images.push(img);
+        }
+
+        animation_images.insert(animation.clone(), images);
+
+        sheet_w = sheet_w.max(w);
+        sheet_h += h;
+    }
+
+    // Iterate over all images and add them to the sprite sheet
+
+    let mut sprite_sheet = SpriteSheetBuilder::new(name.unwrap_or_default(), sheet_w, sheet_h);
+
+    // Now for every animation image, add it to the sprite sheet
+    let mut y = 0;
+    let mut x = 0;
+    for (animation, img) in animation_images.iter() {
+        let mut img_height = 0;
+        for frame in img {
+            sprite_sheet.add_sprite(animation.clone(), x, y, frame.clone());
+
+            x += frame.width();
+            img_height = img_height.max(frame.height());
+        }
+
+        x = 0;
+        y += img_height;
+    }
+
+    // Save the sprite sheet
+    sprite_sheet.save(output_directory)?;
+
+    // TODO:
+    Ok(())
+}
+
+fn render_animations(
+    blender_file: PathBuf,
+    script_path: PathBuf,
+    sprite_width: u32,
+    sprite_height: u32,
+    view_type: ViewType,
+    num_rotations: u32,
+    animations: String,
+    blender_render_dir: PathBuf,
+) -> Result<(), String> {
     let blender_exe = get_blender_location();
     let command_output = Command::new(blender_exe)
         .arg("-b")
@@ -85,7 +221,7 @@ pub fn run(
         // .arg("--debug-python")
         // Add in some args for the Python script
         .arg("--")
-        .arg(output_directory)
+        .arg(&blender_render_dir)
         .arg(sprite_width.to_string())
         .arg(sprite_height.to_string())
         .arg(format!("{:?}", view_type))
@@ -102,8 +238,6 @@ pub fn run(
         Err(e) => return Err(format!("{:?}", e)),
     }
 
-    // Now stitch together the sprite sheet
-    // TODO:
     Ok(())
 }
 
@@ -135,7 +269,6 @@ fn validate(
             output_directory
         ));
     }
-    std::fs::create_dir_all(&output_directory).unwrap();
 
     // Validate sprite_width is greater than 0
     if sprite_width == 0 {
