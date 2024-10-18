@@ -6,7 +6,7 @@
 
 - Not sure if this is needed, but certainly would be nice
 
-## Blender Spritesheet Generator
+## 241017 Blender Spritesheet Generator
 
 - [x] Build out new CLI option
 - [x] Takes in a blender project name
@@ -24,10 +24,8 @@
 - [x] Get working on MacOS
 - [x] Stitch together things into animations + spritesheets
 - [x] Test out no animation spritesheets
-- [ ] Verify it still works on Linux
-- [ ] Get this working on Monogame/other engines immediately. After it's working only then should you look into densely packing spritesheets. This way you can make sure things work as expected.
-- [ ] Convert it to densely pack spritesheets. E.g. for each frame, figure out what you can trim then update the offset stuff for that. May need to calculate the 'center' as well for the animation. Perhaps you always assume the sprite is drawn from (0,0), then an offset is included that tells you how much to add?
-- [ ] Experiment with adding Rayon
+- [x] Verify it still works on Linux
+- [x] Convert it to densely pack spritesheets. E.g. for each frame, figure out what you can trim then update the offset stuff for that. May need to calculate the 'center' as well for the animation. Perhaps you always assume the sprite is drawn from (0,0), then an offset is included that tells you how much to add?
 
 ## 24-10-14 Font bitmap sheet
 

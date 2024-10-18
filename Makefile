@@ -40,7 +40,7 @@ blend2sheet-anim-sidescroller: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller
 
 blend2sheet-anim-isometric: example_dir
-	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 isometric --num-rotations 8
+	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 256 256 isometric --num-rotations 8
 
 blend2sheet-anim-top-down: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 top-down

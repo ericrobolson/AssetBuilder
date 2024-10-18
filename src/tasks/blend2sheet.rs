@@ -146,57 +146,34 @@ pub fn run(
     }
 
     // Now that we have all animations, let's load them and determine the size of the sprite sheet
-    let mut sheet_w = 0;
-    let mut sheet_h = 0;
 
     let mut animation_images = HashMap::new();
     for (animation, frames) in animations.iter() {
-        let mut w = 0;
-        let mut h = 0;
-
         let mut images = vec![];
 
         for frame in frames {
-            // Load image
             let img = image::open(frame).unwrap();
-
-            // Increment the width and height for the animation
-            w += img.width();
-            h = img.height().max(h);
 
             images.push(img);
         }
 
         animation_images.insert(animation.clone(), images);
-
-        sheet_w = sheet_w.max(w);
-        sheet_h += h;
     }
 
     // Iterate over all images and add them to the sprite sheet
 
-    let mut sprite_sheet = SpriteSheetBuilder::new(name.unwrap_or_default(), sheet_w, sheet_h);
+    let mut sprite_sheet = SpriteSheetBuilder::new(name.unwrap_or_default());
 
     // Now for every animation image, add it to the sprite sheet
-    let mut y = 0;
-    let mut x = 0;
-    for (animation, img) in animation_images.iter() {
-        let mut img_height = 0;
-        for frame in img {
-            sprite_sheet.add_sprite(animation.clone(), x, y, frame.clone());
-
-            x += frame.width();
-            img_height = img_height.max(frame.height());
+    for (animation, imgs) in animation_images.iter() {
+        for frame in imgs.iter() {
+            sprite_sheet.add_sprite(animation.clone(), frame.clone());
         }
-
-        x = 0;
-        y += img_height;
     }
 
     // Save the sprite sheet
     sprite_sheet.save(output_directory)?;
 
-    // TODO:
     Ok(())
 }
 
