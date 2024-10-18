@@ -19,3 +19,118 @@ This repo is used for generating assests used in games.
 
 ## Examples
 Look at the `Makefile` to see a list of example invocations. 
+
+### font-map
+
+When this command is ran, a densely packed spritesheet of characters and JSON mapping will be generated. The texture will be sized to a power of 2 on the width and height and each sprite will be cropped to minimize empty space. 
+
+Each JSON file will have the total width, the height, as well as the name.
+
+It will have a `sprites` field which will contain a list of frames for each character.
+
+For each frame, the `x` and `y` fields map to the location on the spritesheet image, the `width` and `height` fields map to the size of the sprite on the spritesheet image.
+The `top_left_offset_x` and `top_left_offset_y` should be added to the position when rendering the sprite in your engine. This will help ensure that even though each frame is a different size, they are centered in the same spot.
+
+Example JSON file:
+```
+{
+  "width": 256,
+  "height": 256,
+  "name": "font_atlas",
+  "sprites": {
+    "0": [
+      {
+        "top_left_offset_x": 10,
+        "top_left_offset_y": 24,
+        "x": 161,
+        "y": 47,
+        "width": 23,
+        "height": 35
+      }
+    ],
+    "Z": [
+      {
+        "top_left_offset_x": 9,
+        "top_left_offset_y": 24,
+        "x": 0,
+        "y": 189,
+        "width": 25,
+        "height": 35
+      }
+    ],
+    // etc...
+  }
+}
+```
+
+Example image file:
+
+![font_atlas.png](data/example_font-map/font_atlas.png "font_atlas.png")
+
+Both can be located at `data/example_font-map` or by running the `font-map` commands in `Makefile`.
+
+
+### blend2sheet
+
+When this command is ran, a densely packed spritesheet and JSON mapping will be generated. The texture will be sized to a power of 2 on the width and height and each sprite will be cropped to minimize empty space. 
+
+Each JSON file will have the total width, the height, as well as the name.
+
+It will have a `sprites` field which will contain a list of frames for each animation.
+
+For each frame, the `x` and `y` fields map to the location on the spritesheet image, the `width` and `height` fields map to the size of the sprite on the spritesheet image.
+The `top_left_offset_x` and `top_left_offset_y` should be added to the position when rendering the sprite in your engine. This will help ensure that even though each frame is a different size, they are centered in the same spot.
+
+Example JSON file:
+```
+{
+  "width": 2048,
+  "height": 2048,
+  "name": "Animated",
+  "sprites": {
+    "Animated.Isometric.Walk.rotation-0": [
+      {
+        "top_left_offset_x": 94,
+        "top_left_offset_y": 60,
+        "x": 1040,
+        "y": 1262,
+        "width": 68,
+        "height": 131
+      },
+      {
+        "top_left_offset_x": 93,
+        "top_left_offset_y": 60,
+        "x": 1483,
+        "y": 1525,
+        "width": 68,
+        "height": 127
+      }
+    ],
+    "Animated.Isometric.Walk.rotation-1": [
+      {
+        "top_left_offset_x": 94,
+        "top_left_offset_y": 60,
+        "x": 1040,
+        "y": 1262,
+        "width": 68,
+        "height": 131
+      },
+      {
+        "top_left_offset_x": 93,
+        "top_left_offset_y": 60,
+        "x": 1483,
+        "y": 1525,
+        "width": 68,
+        "height": 127
+      }
+    ],
+    // etc...
+  }
+}
+```
+
+Example image file:
+
+![Animated.png](data/example_blend2sheet/Animated.png "Animated.png")
+
+Both can be located at `data/example_blend2sheet` or by running the `blend2sheet` commands in `Makefile`.

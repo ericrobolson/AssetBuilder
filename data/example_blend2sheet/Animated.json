@@ -1,0 +1,46 @@
+{
+  "width": 2048,
+  "height": 2048,
+  "name": "Animated",
+  "sprites": {
+    "Animated.Isometric.Walk.rotation-0": [
+      {
+        "top_left_offset_x": 94,
+        "top_left_offset_y": 60,
+        "x": 1040,
+        "y": 1262,
+        "width": 68,
+        "height": 131
+      },
+      {
+        "top_left_offset_x": 93,
+        "top_left_offset_y": 60,
+        "x": 1483,
+        "y": 1525,
+        "width": 68,
+        "height": 127
+      }
+    ],
+    "Animated.Isometric.Walk.rotation-1": [
+      {
+        "top_left_offset_x": 94,
+        "top_left_offset_y": 60,
+        "x": 1040,
+        "y": 1262,
+        "width": 68,
+        "height": 131
+      },
+      {
+        "top_left_offset_x": 93,
+        "top_left_offset_y": 60,
+        "x": 1483,
+        "y": 1525,
+        "width": 68,
+        "height": 127
+      }
+    ],
+    // ...
+    // ...
+    // ...
+  }
+}
