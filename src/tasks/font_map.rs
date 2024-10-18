@@ -123,33 +123,15 @@ pub fn run(
     }
 
     // Assemble spritesheet
+    let mut spritesheet = SpriteSheetBuilder::new("font_atlas".to_string());
 
-    // First we'll make a square spritesheet and calculate the size of each image
-    let max_images_per_row: u32 = 16;
-    let max_images_per_column: u32 =
-        (images.len() as f32 / max_images_per_row as f32).ceil() as u32;
-
-    let image_width = max_w * max_images_per_row;
-    let image_height = max_h * max_images_per_column;
-
-    let mut spritesheet =
-        SpriteSheetBuilder::new("font_atlas".to_string(), image_width, image_height);
-
-    // Sort images
+    // Sort images for easier reading
     let mut images: Vec<_> = images.into_iter().collect();
     images.sort_by(|a, b| a.0.cmp(&b.0));
 
     // Add each image to the spritesheet
-    let mut x = 0;
-    let mut y = 0;
     for (character, image) in images {
-        spritesheet.add_sprite(character.to_string(), x, y, image);
-
-        x += max_w;
-        if x >= image_width {
-            x = 0;
-            y += max_h;
-        }
+        spritesheet.add_sprite(character.to_string(), image);
     }
 
     // Save
