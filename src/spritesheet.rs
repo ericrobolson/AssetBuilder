@@ -105,7 +105,7 @@ impl SpriteSheetBuilder {
         });
     }
 
-    pub fn save(&mut self, path: PathBuf) -> Result<(), String> {
+    pub fn save(&mut self, path: &PathBuf) -> Result<(), String> {
         if path.extension().is_some() {
             return Err(format!(
                 "Path {:?} should not have an extension when saving a sprite sheet",

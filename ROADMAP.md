@@ -2,9 +2,9 @@
 
 - [ ] TODO: test on windows
 
-## Unity asset 2 blender converter?
-
-- Not sure if this is needed, but certainly would be nice
+## 241020 Render all blend files
+- [x] Add ability to render all blender files in a directory
+- [x] Stitch them all together on a single sheet
 
 ## 241017 Blender Spritesheet Generator
 

@@ -135,7 +135,7 @@ pub fn run(
     }
 
     // Save
-    spritesheet.save(fontmap_directory)?;
+    spritesheet.save(&fontmap_directory)?;
 
     Ok(())
 }

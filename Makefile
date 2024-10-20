@@ -17,7 +17,7 @@ font-map-pixel: example_dir
 	cargo run -- font-map data/fonts/Open_Sans/OpenSans-Regular.ttf "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUFWXYZ0123456789,.?!@#$%^&()_+-"	example_results/font-map/atlas --font-scale 24.0
 
 
-## Blend2Sheet
+## Blend2Sheetblend2sheet-anim-sidescroller
 ### No animations
 blend2sheet-no-anim-internal-camera: example_dir
 	cargo run -- blend2sheet data/blender/Suzanne.blend example_results/blend2sheet/atlas 320 240 internal-camera
@@ -56,7 +56,7 @@ blend2sheet-anim-advance-wars-battle: example_dir
 blend2sheet-anim-pokemon-battle: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 pokemon-battle
 
-## Specified animations
+### Specified animations
 
 blend2sheet-two-anims-sidescroller: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller --animations "Walk,Idle"
@@ -66,6 +66,13 @@ blend2sheet-one-anims-sidescroller: example_dir
 
 blend2sheet-no-anims-sidescroller: example_dir
 	cargo run -- blend2sheet data/blender/Animated.blend example_results/blend2sheet/atlas 128 128 sidescroller --animations "DOESNTEXIST"
+
+## MegaSheet
+mega-sheet-help: example_dir
+	cargo run -- mega-sheet --help
+
+mega-sheet: example_dir
+	cargo run -- mega-sheet data/blender/ example_results/mega-sheet/atlas 128 128 sidescroller
 
 # Misc utilities
 example_dir: FORCE

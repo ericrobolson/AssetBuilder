@@ -2,20 +2,19 @@ use crate::spritesheet_gen::{render_animations, stitch_together_renders, ViewTyp
 use std::path::PathBuf;
 
 pub fn run(
-    blender_file: PathBuf,
+    source_directory: PathBuf,
     output_directory: PathBuf,
     sprite_width: u32,
     sprite_height: u32,
     view_type: ViewType,
     num_rotations: u32,
-    animations: String,
 ) -> Result<(), String> {
     // Use
     // https://github.com/ericrobolson/BuilderGenerator
     // as reference
 
     validate(
-        &blender_file,
+        &source_directory,
         &output_directory,
         sprite_width,
         sprite_height,
@@ -26,27 +25,33 @@ pub fn run(
     // Render all frames and animations
     //
 
+    // Using walkdir, recursively search for all .blend files in the source directory
     let blender_render_dir = output_directory.join(".blender_render");
+    for entry in walkdir::WalkDir::new(&source_directory)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.file_type().is_file())
+    {
+        if entry.path().extension().unwrap() == "blend" {
+            let blender_file = entry.path();
 
-    std::fs::create_dir_all(&output_directory).unwrap();
-    std::fs::create_dir_all(&blender_render_dir).unwrap();
+            std::fs::create_dir_all(&output_directory).unwrap();
+            std::fs::create_dir_all(&blender_render_dir).unwrap();
 
-    let script_path = PathBuf::from("data/render_blender.py");
-    let current_dur = std::env::current_dir().unwrap();
+            let script_path = PathBuf::from("data/render_blender.py");
 
-    let blender_file = current_dur.join(blender_file);
-    let script_path = current_dur.join(script_path);
-
-    render_animations(
-        blender_file,
-        script_path.clone(),
-        sprite_width,
-        sprite_height,
-        view_type.clone(),
-        num_rotations,
-        animations.clone(),
-        blender_render_dir.clone(),
-    )?;
+            render_animations(
+                blender_file.to_path_buf(),
+                script_path.clone(),
+                sprite_width,
+                sprite_height,
+                view_type.clone(),
+                num_rotations,
+                String::default(),
+                blender_render_dir.clone(),
+            )?;
+        }
+    }
 
     //
     // Now stitch together the sprite sheet
@@ -55,30 +60,30 @@ pub fn run(
     stitch_together_renders(
         &blender_render_dir,
         &output_directory,
-        crate::spritesheet_gen::AnimationNaming::SingleObject,
+        crate::spritesheet_gen::AnimationNaming::MultiObject,
     )?;
 
     Ok(())
 }
 
 fn validate(
-    blender_file: &PathBuf,
+    source_directory: &PathBuf,
     output_directory: &PathBuf,
     sprite_width: u32,
     sprite_height: u32,
     num_rotations: u32,
 ) -> Result<(), String> {
     // Validate blender_file
-    if !blender_file.exists() {
-        return Err(format!("Blender file {:?} does not exist", blender_file));
-    }
-    if !blender_file.is_file() {
-        return Err(format!("Blender file {:?} is not a file", blender_file));
-    }
-    if !blender_file.extension().unwrap_or_default().eq("blend") {
+    if !source_directory.exists() {
         return Err(format!(
-            "Blender file {:?} is not a .blend file",
-            blender_file
+            "Source directory {:?} does not exist",
+            source_directory
+        ));
+    }
+    if !source_directory.is_dir() {
+        return Err(format!(
+            "Source directory {:?} is not a file",
+            source_directory
         ));
     }
 
