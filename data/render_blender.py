@@ -179,6 +179,17 @@ def undo_animation(obj):
 def perform_render(perspectives):
     # Do static renders
     if not bpy.data.actions:
+        # Set start and end frame
+        start = 0
+        end = 0
+        bpy.context.scene.frame_start = start
+        bpy.context.scene.frame_end = end
+
+        for scene in bpy.data.scenes:
+            scene.frame_start = int(start)
+            scene.frame_end = int(end)
+            
+
         for perspective in perspectives:
             set_lighting(perspective["light_rotation"])
             set_camera(perspective["camera_position"], perspective["camera_rotation"])

@@ -4,3 +4,4 @@ target/
 example_results/
 *.blend*
 !*.blend
+test_renders.sh
