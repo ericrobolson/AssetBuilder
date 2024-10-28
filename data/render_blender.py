@@ -96,7 +96,7 @@ def set_lighting(rotation):
 
     # create light datablock, set attributes
     light_data = bpy.data.lights.new(name=LIGHTING_NAME, type='SUN')
-    light_data.energy = 1
+    light_data.energy = 5
 
     # create new object with our light datablock
     light_object = bpy.data.objects.new(

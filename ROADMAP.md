@@ -1,6 +1,7 @@
 ## Misc eventually todos
 
 - [ ] TODO: test on windows
+- [ ] Add adjustable strength for lighting
 
 ## 241020 Render all blend files
 - [x] Add ability to render all blender files in a directory
