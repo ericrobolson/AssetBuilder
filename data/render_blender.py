@@ -49,14 +49,22 @@ def skip_action_setting(obj):
         return True
     return False
 
+def delete_obj(obj):
+    if obj is None:
+        return
+    if bpy.context.object.mode == 'EDIT':
+        bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+    obj.select_set(True)
+    bpy.ops.object.delete()
+
 def set_camera(location, rotation, orthographic = True):
     CAMERA_NAME = "__renderer_scene_camera__"
 
     # Remove existing cameras
     for obj in bpy.data.objects:
         if obj.type == 'CAMERA':
-            obj.select_set(True)
-            bpy.ops.object.delete()
+            delete_obj(obj)
 
     # Create new camera
     camera_data = bpy.data.cameras.new(name=CAMERA_NAME)
@@ -84,8 +92,7 @@ def set_lighting(rotation):
     # remove any existing default lighting in the event we're using a previously rendered scene
     for obj in bpy.data.objects:
         if obj.name == LIGHTING_NAME:
-            obj.select_set(True)
-            bpy.ops.object.delete()
+            delete_obj(obj)
 
     # create light datablock, set attributes
     light_data = bpy.data.lights.new(name=LIGHTING_NAME, type='SUN')
