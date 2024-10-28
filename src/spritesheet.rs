@@ -85,14 +85,19 @@ impl SpriteSheetBuilder {
         let animation = self.sheet.sprites.get_mut(&animation_name).unwrap();
         let idx = animation.len();
 
+        let width = image.width();
+        let height = image.height();
+
         // Now update that animation
         animation.push(Frame {
             top_left_offset_x,
             top_left_offset_y,
             x: 0,
             y: 0,
-            width: original_width,
-            height: original_height,
+            width,
+            height,
+            original_width,
+            original_height,
         });
 
         // Add sprite to list of sprites to add
@@ -189,8 +194,6 @@ impl SpriteSheetBuilder {
 
             frame.x = sprite.x;
             frame.y = sprite.y;
-            frame.width = sprite.image.width();
-            frame.height = sprite.image.height();
         }
 
         // Create directory if it doesn't exist
@@ -245,4 +248,8 @@ pub struct Frame {
     pub width: u32,
     /// The height of the frame
     pub height: u32,
+    /// The original width of the frame before cropping
+    pub original_width: u32,
+    /// The original height of the frame before cropping
+    pub original_height: u32,
 }
