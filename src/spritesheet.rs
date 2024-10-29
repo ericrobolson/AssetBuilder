@@ -98,8 +98,8 @@ impl SpriteSheetBuilder {
             height,
             original_width,
             original_height,
-            center_offset_x: (original_width / 2 - min_x) as i32,
-            center_offset_y: (original_height / 2 - min_y) as i32,
+            center_offset_x: (original_width / 2) as i32 - (min_x as i32),
+            center_offset_y: (original_height / 2) as i32 - (min_y as i32),
         });
 
         // Add sprite to list of sprites to add
