@@ -90,6 +90,8 @@ impl SpriteSheetBuilder {
 
         // Now update that animation
         animation.push(Frame {
+            top_left_offset_x,
+            top_left_offset_y,
             x: 0,
             y: 0,
             width,
@@ -234,6 +236,8 @@ pub struct SpriteSheet {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Frame {
+    pub top_left_offset_x: u32,
+    pub top_left_offset_y: u32,
     pub center_offset_x: i32,
     pub center_offset_y: i32,
     /// The x position of the frame in the sprite sheet
