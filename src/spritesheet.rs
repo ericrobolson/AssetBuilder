@@ -236,9 +236,13 @@ pub struct SpriteSheet {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Frame {
+    /// The amount chopped off the original frame
     pub top_left_offset_x: u32,
+    /// The amount chopped off the original frame
     pub top_left_offset_y: u32,
+    /// Value to offset the center of the frame
     pub center_offset_x: i32,
+    /// Value to offset the center of the frame
     pub center_offset_y: i32,
     /// The x position of the frame in the sprite sheet
     pub x: u32,
