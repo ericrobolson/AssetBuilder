@@ -88,6 +88,9 @@ impl SpriteSheetBuilder {
         let width = image.width();
         let height = image.height();
 
+        let center_offset_x = (width / 2) as i32 - top_left_offset_x as i32;
+        let center_offset_y = (height / 2) as i32 - top_left_offset_y as i32;
+
         // Now update that animation
         animation.push(Frame {
             top_left_offset_x,
@@ -98,6 +101,8 @@ impl SpriteSheetBuilder {
             height,
             original_width,
             original_height,
+            center_offset_x,
+            center_offset_y,
         });
 
         // Add sprite to list of sprites to add
@@ -240,6 +245,9 @@ pub struct Frame {
     /// The top left offset of the frame to center the sprite.
     /// Add this to the position of the sprite to center it in your engine.
     pub top_left_offset_y: u32,
+
+    pub center_offset_x: i32,
+    pub center_offset_y: i32,
     /// The x position of the frame in the sprite sheet
     pub x: u32,
     /// The y position of the frame in the sprite sheet
