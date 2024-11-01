@@ -72,7 +72,7 @@ mega-sheet-help: example_dir
 	cargo run -- mega-sheet --help
 
 mega-sheet: example_dir
-	cargo run -- mega-sheet data/blender/ example_results/mega-sheet/atlas 128 128 sidescroller
+	cargo run -- mega-sheet data/blender/ example_results/mega-sheet/atlas MegaSheetName 128 128 sidescroller
 
 # Misc utilities
 example_dir: FORCE

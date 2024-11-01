@@ -1,6 +1,9 @@
 use image::{DynamicImage, GenericImage, GenericImageView};
-use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, path::PathBuf};
+use serde::{Deserialize, Serialize, Serializer};
+use std::{
+    collections::{BTreeMap, HashMap},
+    path::PathBuf,
+};
 
 /// A rectangle that contains an image and its position in the sprite sheet.
 /// This is used to pack the images into the sprite sheet.
@@ -25,7 +28,7 @@ impl SpriteSheetBuilder {
                 width: 0,
                 height: 0,
                 name,
-                sprites: HashMap::new(),
+                sprites: BTreeMap::new(),
             },
             sprites_to_add: vec![],
         }
@@ -231,7 +234,7 @@ pub struct SpriteSheet {
     /// The name of the sprite sheet
     pub name: String,
     /// The sprites in the sprite sheet
-    pub sprites: HashMap<String, Vec<Frame>>,
+    pub sprites: BTreeMap<String, Vec<Frame>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -256,4 +259,17 @@ pub struct Frame {
     pub original_width: u32,
     /// The original height of the frame before cropping
     pub original_height: u32,
+}
+
+/// For use with serde's [serialize_with] attribute
+/// https://stackoverflow.com/a/42723390
+fn ordered_map<S, K: Ord + Serialize, V: Serialize>(
+    value: &HashMap<K, V>,
+    serializer: S,
+) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    let ordered: BTreeMap<_, _> = value.iter().collect();
+    ordered.serialize(serializer)
 }

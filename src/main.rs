@@ -56,6 +56,8 @@ pub enum Args {
         source_directory: PathBuf,
         /// Path to output the sprite sheet to
         output_directory: PathBuf,
+        /// The name of the output sprite sheet
+        output_name: String,
         /// The width of each sprite in the sheet
         sprite_width: u32,
         /// The height of each sprite in the sheet
@@ -102,6 +104,7 @@ fn main() -> Result<(), String> {
         Args::MegaSheet {
             source_directory,
             output_directory,
+            output_name,
             sprite_width,
             sprite_height,
             view_type,
@@ -110,6 +113,7 @@ fn main() -> Result<(), String> {
             tasks::mega_sheet::run(
                 source_directory,
                 output_directory,
+                output_name,
                 sprite_width,
                 sprite_height,
                 view_type,

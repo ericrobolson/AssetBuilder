@@ -49,12 +49,12 @@ pub fn get_blender_location() -> String {
     panic!("Could not find blender executable; error 4004b");
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum AnimationNaming {
     /// Naming convention for a single object in a spritesheet
     SingleObject,
     /// Naming convention for multiple objects in the same spritesheet
-    MultiObject,
+    Custom(String),
 }
 
 /// Stitch together all renders in a directory into a single sprite sheet
@@ -153,7 +153,7 @@ pub fn stitch_together_renders(
     // Iterate over all images and add them to the sprite sheet
     let name = match animation_naming {
         AnimationNaming::SingleObject => name.unwrap_or_default(),
-        AnimationNaming::MultiObject => "MegaSheet".to_string(),
+        AnimationNaming::Custom(name) => name,
     };
     let mut sprite_sheet = SpriteSheetBuilder::new(name);
 

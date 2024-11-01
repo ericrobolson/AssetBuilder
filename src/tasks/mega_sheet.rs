@@ -4,6 +4,7 @@ use std::path::PathBuf;
 pub fn run(
     source_directory: PathBuf,
     output_directory: PathBuf,
+    output_name: String,
     sprite_width: u32,
     sprite_height: u32,
     view_type: ViewType,
@@ -16,6 +17,7 @@ pub fn run(
     validate(
         &source_directory,
         &output_directory,
+        &output_name,
         sprite_width,
         sprite_height,
         num_rotations,
@@ -60,7 +62,7 @@ pub fn run(
     stitch_together_renders(
         &blender_render_dir,
         &output_directory,
-        crate::spritesheet_gen::AnimationNaming::MultiObject,
+        crate::spritesheet_gen::AnimationNaming::Custom(output_name),
     )?;
 
     Ok(())
@@ -69,10 +71,15 @@ pub fn run(
 fn validate(
     source_directory: &PathBuf,
     output_directory: &PathBuf,
+    output_name: &str,
     sprite_width: u32,
     sprite_height: u32,
     num_rotations: u32,
 ) -> Result<(), String> {
+    if output_name.is_empty() {
+        return Err("Output name must not be empty".to_string());
+    }
+
     // Validate blender_file
     if !source_directory.exists() {
         return Err(format!(
