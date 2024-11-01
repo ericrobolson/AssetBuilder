@@ -89,7 +89,7 @@ fn validate(
     }
     if !source_directory.is_dir() {
         return Err(format!(
-            "Source directory {:?} is not a file",
+            "Source directory {:?} is not a directory",
             source_directory
         ));
     }
