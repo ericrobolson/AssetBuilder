@@ -3,6 +3,8 @@ use std::path::PathBuf;
 use image::GenericImageView;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
+const EXTENSIONS: [&str; 5] = ["png", "jpg", "jpeg", "bmp", "tga"];
+
 pub fn run(source_directory: PathBuf, scale: f32) -> Result<(), String> {
     // Verify that scale is above zero
     if scale <= 0.0 {
@@ -24,7 +26,8 @@ pub fn run(source_directory: PathBuf, scale: f32) -> Result<(), String> {
         .filter(|e| e.file_type().is_file())
     {
         let ext = entry.path().extension().unwrap();
-        if ext == "png" || ext == "jpg" || ext == "jpeg" || ext == "bmp" {
+
+        if EXTENSIONS.contains(&ext.to_str().unwrap()) {
             paths.push(entry);
         }
     }
