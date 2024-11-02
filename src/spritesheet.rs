@@ -4,15 +4,38 @@ use std::{
     collections::{BTreeMap, HashMap},
     path::PathBuf,
 };
+use uuid::Uuid;
 
 /// A rectangle that contains an image and its position in the sprite sheet.
 /// This is used to pack the images into the sprite sheet.
+#[derive(Debug, Clone)]
 struct Rect {
     animation: String,
     frame_index: usize,
     image: DynamicImage,
     x: u32,
     y: u32,
+    id: Uuid,
+}
+struct DuplicateImageRect {
+    animation: String,
+    frame_index: usize,
+    x: u32,
+    y: u32,
+    id: Uuid,
+    reference_rect_id: Uuid,
+}
+impl DuplicateImageRect {
+    fn from_rect(r: &Rect, reference_rect_id: Uuid) -> Self {
+        Self {
+            animation: r.animation.clone(),
+            frame_index: r.frame_index,
+            x: r.x,
+            y: r.y,
+            id: r.id,
+            reference_rect_id,
+        }
+    }
 }
 
 /// A sprite sheet that contains a collection of sprites and an image
@@ -112,6 +135,7 @@ impl SpriteSheetBuilder {
             image: image,
             x: 0,
             y: 0,
+            id: Uuid::new_v4(),
         });
     }
 
@@ -160,11 +184,34 @@ impl SpriteSheetBuilder {
             height *= 2;
         }
 
+        // TODO: this is where I need to figure shit out.
+
+        let mut sprites_to_add = self.sprites_to_add.clone();
+        // Find any duplicates
+        let mut duplicates: Vec<DuplicateImageRect> = vec![];
+
+        for i in sprites_to_add.len()..0 {
+            if i == 0 {
+                break;
+            }
+
+            for j in 0..i {
+                if sprites_to_add[i].image == sprites_to_add[j].image {
+                    duplicates.push(DuplicateImageRect::from_rect(
+                        &sprites_to_add[i],
+                        sprites_to_add[j].id.clone(),
+                    ));
+
+                    sprites_to_add.remove(i);
+                }
+            }
+        }
+
         // Now go through and pack all the rectangles by setting x and y
         let mut x_pos = 0;
         let mut y_pos = 0;
         let mut largest_height_this_row = 0;
-        for rect in self.sprites_to_add.iter_mut() {
+        for rect in sprites_to_add.iter_mut() {
             if x_pos + rect.image.width() > width {
                 x_pos = 0;
                 y_pos += largest_height_this_row;
@@ -190,7 +237,7 @@ impl SpriteSheetBuilder {
         self.sheet.width = width;
         self.sheet.height = height;
 
-        for sprite in self.sprites_to_add.iter() {
+        for sprite in sprites_to_add.iter() {
             image.copy_from(&sprite.image, sprite.x, sprite.y).unwrap();
 
             // write rectangle coordinates to frame
@@ -199,6 +246,19 @@ impl SpriteSheetBuilder {
 
             frame.x = sprite.x;
             frame.y = sprite.y;
+        }
+
+        // Update duplicate frames
+        for dup in duplicates.iter() {
+            let rect = sprites_to_add
+                .iter()
+                .find(|r| r.id == dup.reference_rect_id)
+                .unwrap();
+
+            let frame = &mut self.sheet.sprites.get_mut(&dup.animation).unwrap()[dup.frame_index];
+
+            frame.x = rect.x;
+            frame.y = rect.y;
         }
 
         // Create directory if it doesn't exist
