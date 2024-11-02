@@ -3,6 +3,9 @@
 - [ ] TODO: test on windows
 - [ ] Add adjustable strength for lighting
 
+## 241102 Resize Images
+- [x] Add new task to resize all images in a directory. Useful for compressing textures for 3d models.
+
 ## 241020 Render all blend files
 - [x] Add ability to render all blender files in a directory
 - [x] Stitch them all together on a single sheet

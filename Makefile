@@ -16,6 +16,12 @@ font-map: example_dir
 font-map-pixel: example_dir
 	cargo run -- font-map data/fonts/Open_Sans/OpenSans-Regular.ttf "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUFWXYZ0123456789,.?!@#$%^&()_+-"	example_results/font-map/atlas --font-scale 24.0
 
+## Resize images
+resize-imgs-help: example_dir
+	cargo run -- resize-imgs --help
+ 
+resize-imgs: example_dir
+	cargo run -- resize-imgs data/example_resize-imgs 0.25
 
 ## Blend2Sheetblend2sheet-anim-sidescroller
 ### No animations

@@ -68,6 +68,13 @@ pub enum Args {
         #[clap(long, required = false, default_value = "8")]
         num_rotations: u32,
     },
+    #[clap(name = "resize-imgs", about = "Resize images in a directory")]
+    ResizeImgs {
+        /// Path to the directory of images
+        source_directory: PathBuf,
+        /// The amount to scale each image by
+        scale: f32,
+    },
 }
 
 fn main() -> Result<(), String> {
@@ -119,6 +126,12 @@ fn main() -> Result<(), String> {
                 view_type,
                 num_rotations,
             )?;
+        }
+        Args::ResizeImgs {
+            source_directory,
+            scale,
+        } => {
+            tasks::resize_images::run(source_directory, scale)?;
         }
     }
 

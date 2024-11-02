@@ -6,6 +6,8 @@ This repo is used for generating assests used in games.
 
 - `font-map` will take in a string of characters, a TTF font and a location. From there it will rasterize all characters to a spritesheet.
 - - `font-map {TTF_FILE} {TEXT_TO_RENDER} {OUTPUT_DIR} [--font-scale {FLOAT}]`
+- `resize-imgs` will take a directory and a float to resize all images by. Useful for compressing textures in 3d assets.
+- - `resize-imgs {SOURCE_DIR} {SCALE}`
 - `blend2sheet` will take in a Blender file, a view type, and generate a spritesheet based on the animations included if they exist. The resulting file will be a power of 2 to minimize GPU hiccups.
 - - `blend2sheet {BLENDER_FILE} {OUTPUT_DIR} {SPRITE_WIDTH} {SPRITE_HEIGHT} [sidescroller isometric top-down advance-wars-battle pokemon-battle camera] [--num-rotations {INT}] [--animations {CSV_ANIMATION_LIST}]`
 - - - `sidescroller` view type renders the sprite in a platformer view
@@ -86,6 +88,12 @@ Example image file:
 ![font_atlas.png](data/example_font-map/font_atlas.png "font_atlas.png")
 
 Both can be located at `data/example_font-map` or by running the `font-map` commands in `Makefile`.
+
+## resize-imgs
+
+When this command is ran, all images in a source directory will be resized by a given scale.
+
+This command can be useful if you want to check in 3d assets, but don't want to use massive 4k textures.
 
 ### blend2sheet
 
