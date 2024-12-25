@@ -1,3 +1,7 @@
+
+## Roadmap
+- [x] Make hashmaps deterministically ordered. This will make sure that rendering is deterministic.
+
 ## Misc eventually todos
 
 - [ ] TODO: test on windows

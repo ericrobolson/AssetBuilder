@@ -51,7 +51,7 @@ impl SpriteSheetBuilder {
                 width: 0,
                 height: 0,
                 name,
-                sprites: BTreeMap::new(),
+                sprites: HashMap::new(),
             },
             sprites_to_add: vec![],
         }
@@ -294,7 +294,8 @@ pub struct SpriteSheet {
     /// The name of the sprite sheet
     pub name: String,
     /// The sprites in the sprite sheet
-    pub sprites: BTreeMap<String, Vec<Frame>>,
+    #[serde(serialize_with = "ordered_map")]
+    pub sprites: HashMap<String, Vec<Frame>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
