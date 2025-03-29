@@ -5,7 +5,7 @@ This repo is used for generating assests used in games.
 ## Features
 
 - `font-map` will take in a string of characters, a TTF font and a location. From there it will rasterize all characters to a spritesheet.
-- - `font-map {TTF_FILE} {TEXT_TO_RENDER} {OUTPUT_DIR} [--font-scale {FLOAT}]`
+- - `font-map --ttf {TTF_FILE} --text-files-dir {TEXT_FILES_DIR} --text-file-extension txt --fontmap-directory {OUTPUT_DIR} [--font-scale {FLOAT}]`
 - `resize-imgs` will take a directory and a float to resize all images by. Useful for compressing textures in 3d assets.
 - - `resize-imgs {SOURCE_DIR} {SCALE}`
 - `blend2sheet` will take in a Blender file, a view type, and generate a spritesheet based on the animations included if they exist. The resulting file will be a power of 2 to minimize GPU hiccups.

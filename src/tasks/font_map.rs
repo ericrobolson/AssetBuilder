@@ -8,7 +8,8 @@ use std::{
 
 pub fn run(
     ttf: PathBuf,
-    text: String,
+    text_files_dir: PathBuf,
+    file_extension: String,
     fontmap_directory: PathBuf,
     font_scale: f32,
 ) -> Result<(), String> {
@@ -44,8 +45,24 @@ pub fn run(
 
     // Build the characters to render
     let mut characters = HashSet::new();
-    for c in text.chars() {
-        characters.insert(c);
+    for entry in std::fs::read_dir(text_files_dir).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        println!("Path: {:?}", path);
+
+        if path.is_file()
+            && path
+                .extension()
+                .unwrap()
+                .to_ascii_lowercase()
+                .to_string_lossy()
+                == file_extension
+        {
+            let text = std::fs::read_to_string(path).unwrap();
+            for c in text.chars() {
+                characters.insert(c);
+            }
+        }
     }
 
     // Render each character

@@ -10,11 +10,11 @@ font-map-help: example_dir
 	cargo run -- font-map --help
 
 font-map: example_dir
-	cargo run -- font-map data/fonts/Open_Sans/OpenSans-Regular.ttf "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUFWXYZ0123456789,.?!@#$%^&()_+-"	example_results/font-map/atlas --font-scale 64.0
+	cargo run -- font-map --ttf data/fonts/Open_Sans/OpenSans-Regular.ttf --text-files-dir data/fonts/ --text-file-extension txt	--fontmap-directory example_results/font-map/atlas --font-scale 64.0
 
 
 font-map-pixel: example_dir
-	cargo run -- font-map data/fonts/Open_Sans/OpenSans-Regular.ttf "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUFWXYZ0123456789,.?!@#$%^&()_+-"	example_results/font-map/atlas --font-scale 24.0
+	cargo run -- font-map --ttf data/fonts/Open_Sans/OpenSans-Regular.ttf --text-files-dir data/fonts/ --text-file-extension txt	--fontmap-directory example_results/font-map/atlas --font-scale 24.0
 
 ## Resize images
 resize-imgs-help: example_dir

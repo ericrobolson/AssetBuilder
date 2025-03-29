@@ -14,10 +14,16 @@ pub enum Args {
     )]
     FontMap {
         /// Path to the TTF file
+        #[clap(long)]
         ttf: PathBuf,
-        /// String of text to render
-        text: String,
+        /// Path to where text files are located
+        #[clap(long)]
+        text_files_dir: PathBuf,
+        /// File extension to use when sourcing text
+        #[clap(long)]
+        text_file_extension: String,
         /// Path to output the fontmap_file file and json to
+        #[clap(long)]
         fontmap_directory: PathBuf,
         /// The scale of the font. Default is 12.0.
         #[clap(long, default_value = "12.0")]
@@ -83,11 +89,18 @@ fn main() -> Result<(), String> {
     match args {
         Args::FontMap {
             ttf,
-            text,
+            text_files_dir,
+            text_file_extension,
             fontmap_directory,
             font_scale,
         } => {
-            tasks::font_map::run(ttf, text, fontmap_directory, font_scale)?;
+            tasks::font_map::run(
+                ttf,
+                text_files_dir,
+                text_file_extension,
+                fontmap_directory,
+                font_scale,
+            )?;
         }
         Args::Blend2Sheet {
             blender_file,
